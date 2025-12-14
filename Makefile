@@ -32,7 +32,7 @@ MAKEFLAGS += --no-builtin-rules
 PKG := github.com/kubernetes-up-and-running/kuard
 
 # Registry to push to.
-REGISTRY ?= gcr.io/kuar-demo
+REGISTRY ?= ongoonku/kuar-demo
 
 # For demo purposes, we want to build multiple versions.  They will all be
 # mostly the same but will let us demonstrate rollouts.
@@ -174,21 +174,21 @@ $(BIN_DOCKERFILE): Dockerfile.kuard
 			$< > $@
 
 
-CONTAINER_NAME  := $(REGISTRY)/kuard-$(ARCH)
-BUILDSTAMP_NAME := $(subst /,_,$(CONTAINER_NAME)-$(FAKEVER))
+IMAGE_NAME  := $(REGISTRY)/kuard-$(ARCH)
+BUILDSTAMP_NAME := $(subst /,_,$(IMAGE_NAME)-$(FAKEVER))
 
 .$(BUILDSTAMP_NAME)-image: $(BIN_DOCKERFILE) $(BINARYPATH)
-	@echo "container image: $(CONTAINER_NAME):$(VERSION_BASE)-$(FAKEVER)"
+	@echo "container image: $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER)"
 	docker build                                                    \
 		$(DOCKER_BUILD_FLAGS)                                         \
-		-t $(CONTAINER_NAME):$(VERSION_BASE)-$(FAKEVER)               \
+		-t $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER)               \
 		-f .kuard-$(ARCH)-$(FAKEVER)-dockerfile .                     \
 		$(VERBOSE_OUTPUT)
-	echo "$(CONTAINER_NAME):$(VERSION_BASE)-$(FAKEVER)" > $@
-	@echo "container image tag: $(CONTAINER_NAME):$(FAKEVER)"
-	docker tag $(CONTAINER_NAME):$(VERSION_BASE)-$(FAKEVER) $(CONTAINER_NAME):$(FAKEVER)
-	echo "$(CONTAINER_NAME):$(FAKEVER)" >> $@
-	docker images -q $(CONTAINER_NAME):$(VERSION_BASE)-$(FAKEVER) >> $@
+	echo "$(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER)" > $@
+	@echo "container image tag: $(IMAGE_NAME):$(FAKEVER)"
+	docker tag $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER) $(IMAGE_NAME):$(FAKEVER)
+	echo "$(IMAGE_NAME):$(FAKEVER)" >> $@
+	docker images -q $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER) >> $@
 
 .PHONY: images
 images: .$(BUILDSTAMP_NAME)-image
@@ -222,8 +222,8 @@ push-fakever-%:
 .PHONY: all-fakever-build
 all-fakever-build: $(addprefix build-fakever-, $(ALL_FAKEVER))
 
-.PHONY: all-fakever-containers
-all-fakever-containers: $(addprefix containers-fakever-, $(ALL_FAKEVER))
+.PHONY: all-fakever-images
+all-fakever-images: $(addprefix images-fakever-, $(ALL_FAKEVER))
 
 .PHONY: all-fakever-push
 all-fakever-push: $(addprefix push-fakever-, $(ALL_FAKEVER))
@@ -243,8 +243,8 @@ push-arch-%:
 .PHONY: all-arch-build
 all-arch-build: $(addprefix build-arch-, $(ALL_ARCH))
 
-.PHONY: all-arch-containers
-all-arch-containers: $(addprefix containers-arch-, $(ALL_ARCH))
+.PHONY: all-arch-images
+all-arch-images: $(addprefix images-arch-, $(ALL_ARCH))
 
 .PHONY: all-arch-push
 all-arch-push: $(addprefix push-arch-, $(ALL_ARCH))
