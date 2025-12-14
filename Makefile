@@ -32,7 +32,7 @@ MAKEFLAGS += --no-builtin-rules
 PKG := github.com/kubernetes-up-and-running/kuard
 
 # Registry to push to.
-REGISTRY ?= ongoonku/kuar-demo
+REGISTRY ?= ongoonku
 
 # For demo purposes, we want to build multiple versions.  They will all be
 # mostly the same but will let us demonstrate rollouts.
