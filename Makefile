@@ -208,6 +208,11 @@ PUSH_BUILDSTAMP:=.$(BUILDSTAMP_NAME)-push
 push: $(PUSH_BUILDSTAMP)
 
 .%-push: .%-image
+	@if echo "$(VERSION_BASE)" | grep -q dirty; then \
+		echo "ERROR: Cannot push images with uncommitted changes (git status is dirty)"; \
+		echo "Please commit your changes first with: git add . && git commit"; \
+		exit 1; \
+	fi
 	@echo "pushing image: " $$(sed -n '1p' $<)
 	docker push $$(sed -n '1p' $<) $(VERBOSE_OUTPUT)
 	@echo "pushing image: " $$(sed -n '2p' $<)
