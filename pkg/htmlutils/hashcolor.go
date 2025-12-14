@@ -19,6 +19,7 @@ package htmlutils
 import (
 	"fmt"
 	"hash/fnv"
+	"strings"
 )
 
 // ColorFromString returns a CSS color string by hashing the incoming string.
@@ -28,4 +29,18 @@ func ColorFromString(s string) string {
 	h.Write([]byte(s))
 	hue := h.Sum32() % 360
 	return fmt.Sprintf("hsl(%d,100%%,50%%)", hue)
+}
+
+// VersionNameColor parses the version string and returns a CSS color
+// that matches the version name (blue, green, purple).
+func VersionNameColor(version string) string {
+	v := strings.ToLower(version)
+	if strings.Contains(v, "blue") {
+		return "#0066CC"
+	} else if strings.Contains(v, "green") {
+		return "#00AA00"
+	} else if strings.Contains(v, "purple") {
+		return "#9933FF"
+	}
+	return "#666666" // fallback gray
 }

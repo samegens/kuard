@@ -108,7 +108,7 @@ func (k *App) getPageContext(r *http.Request, urlBase string) *pageContext {
 	}
 
 	c.Version = version.VERSION
-	c.VersionColor = template.CSS(htmlutils.ColorFromString(version.VERSION))
+	c.VersionColor = template.CSS(htmlutils.VersionNameColor(version.VERSION))
 	reqDump, _ := httputil.DumpRequest(r, false)
 	c.RequestDump = strings.TrimSpace(string(reqDump))
 	c.RequestProto = r.Proto
