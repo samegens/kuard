@@ -294,6 +294,11 @@ clean: container-clean bin-clean
 
 .PHONY: container-clean
 container-clean:
+	@echo "Removing built kuard images..."
+	@docker images --format "{{.Repository}}:{{.Tag}}" | grep "^$(REGISTRY)/kuard-" | while read img; do \
+		echo "  Removing image: $$img"; \
+		docker rmi -f "$$img" 2>/dev/null || true; \
+	done
 	docker volume rm -f $(BUILD_IMAGE)-data $(BUILD_IMAGE)-node $(VERBOSE_OUTPUT)
 	rm -f .*-container .*-dockerfile .*-push .*-image
 
