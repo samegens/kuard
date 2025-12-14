@@ -39,6 +39,9 @@ REGISTRY ?= ongoonku/kuar-demo
 FAKEVER ?= blue
 ALL_FAKEVER = blue green purple
 
+# Map fake versions to version numbers
+FAKEVER_TO_VERSION = $(if $(filter blue,$(FAKEVER)),1,$(if $(filter green,$(FAKEVER)),2,$(if $(filter purple,$(FAKEVER)),3,)))
+
 # This is the real version.  We'll grab it from git and use tags.
 VERSION_BASE ?= $(shell git describe --tags --always --dirty)
 
@@ -188,6 +191,9 @@ BUILDSTAMP_NAME := $(subst /,_,$(IMAGE_NAME)-$(FAKEVER))
 	@echo "container image tag: $(IMAGE_NAME):$(FAKEVER)"
 	docker tag $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER) $(IMAGE_NAME):$(FAKEVER)
 	echo "$(IMAGE_NAME):$(FAKEVER)" >> $@
+	@echo "container image tag: $(IMAGE_NAME):$(FAKEVER_TO_VERSION)"
+	docker tag $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER) $(IMAGE_NAME):$(FAKEVER_TO_VERSION)
+	echo "$(IMAGE_NAME):$(FAKEVER_TO_VERSION)" >> $@
 	docker images -q $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER) >> $@
 
 .PHONY: images
@@ -206,6 +212,8 @@ push: $(PUSH_BUILDSTAMP)
 	docker push $$(sed -n '1p' $<) $(VERBOSE_OUTPUT)
 	@echo "pushing image: " $$(sed -n '2p' $<)
 	docker push $$(sed -n '2p' $<) $(VERBOSE_OUTPUT)
+	@echo "pushing image: " $$(sed -n '3p' $<)
+	docker push $$(sed -n '3p' $<) $(VERBOSE_OUTPUT)
 	cat $< > $@
 
 ##############################################################################
