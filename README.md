@@ -2,7 +2,7 @@
 
 ![screenshot](docs/images/screenshot.png)
 
-### Running
+## Running
 
 ```bash
 kubectl run --restart=Never --image=ongoonku/kuard-amd64:blue kuard
@@ -11,12 +11,12 @@ kubectl port-forward kuard 8080:8080
 
 Open your browser to [http://localhost:8080](http://localhost:8080).
 
-### Building
+## Building
 
 We have ~3 ways to build.
 This has changed slightly from when the book is published so I'd view this as authoritative.
 
-#### Insert Binary
+### Insert Binary
 
 This aligns with what is in the book.
 You need to build the binary to run *somehow* and then insert it into a Docker image.
@@ -37,7 +37,7 @@ Run with `docker run --rm -ti --name kuard --publish 8080:8080 kuard-amd64:blue`
 
 To upload to a registry you'll have to tag it and push to your registry.  Refer to your registry documentation for details.
 
-#### Multi-stage Dockerfile
+### Multi-stage Dockerfile
 
 A new feature of Docker, since the book was published, is a "multi-stage" build.
 This is a way to run build multiple images and then copy files between them.
@@ -50,7 +50,7 @@ Run with `docker run --rm -ti --name kuard --publish 8080:8080 kuard-amd64:blue`
 
 To upload to a registry you'll have to tag it and push to your registry.  Refer to your registry documentation for details.
 
-#### Fancy Makefile for automated build and push
+### Fancy Makefile for automated build and push
 
 This will build and push container images to a registry.
 This builds a set of images with "fake versions" (see below) to be able to play with upgrades.
@@ -61,7 +61,7 @@ make all-push REGISTRY=<my-gcr-registry>
 
 If you are having trouble, try issuing a `make clean` to reset stuff.
 
-### KeyGen Workload
+## KeyGen Workload
 
 To help simulate batch workers, we have a synthetic workload of generating 4096 bit RSA keys.  This can be configured through the UI or the command line.
 
@@ -75,7 +75,7 @@ To help simulate batch workers, we have a synthetic workload of generating 4096 
 --keygen-time-to-run int      The target run time in seconds. Set to 0 for infinite
 ```
 
-### MemQ server
+## MemQ server
 
 We also have a simple in memory queue with REST API.  This is based heavily on <https://github.com/kelseyhightower/memq>.
 
@@ -90,7 +90,7 @@ The API is as follows with URLs being relative to `<server addr>/memq/server`.  
 | `POST` | `/queues/:queue/enqueue` | Add item to queue.  Body is plain text. Response is message object.
 | `POST` | `/queues/:queue/dequeue` | Grab an item off the queue and return it. Returns a 204 "No Content" if queue is empty.
 
-### Versions
+## Versions
 
 Images built will automatically have the git version (based on tag) applied.  In addition, there is an idea of a "fake version".  This is used so that we can use the same basic server to demonstrate upgrade scenarios.
 
@@ -114,7 +114,7 @@ For documentation where you want to demonstrate using versions but use the lates
 
 We also build versions for `arm`, `arm64`, and `ppc64le`.  Just substitute the appropriate architecture in the image name.  These aren't as well tested as the `amd64` version but seem to work okay. (*Note for this fork: I only build amd64.*)
 
-### Development
+## Development
 
 If you just want to do Go server development, you can build the client as part of a build `make`.  It'll drop the result in to `sitedata/built/`.
 
@@ -139,7 +139,7 @@ If you want to do both Go server and React.js client dev, you need to do the fol
 
 This should support live reload of any changes to the client.  The Go server will need to be exited and restarted to see changes.
 
-### TODO
+## TODO
 
 * [ ] Make file system browser better.  Show size, permissions, etc.  Might be able to do this by faking out an `index.html` as part of the http.FileSystem stuff.
 * [ ] Clean up form for keygen workload.  It is too big and the form build doesn't have enough flexibility to really shrink it down.
