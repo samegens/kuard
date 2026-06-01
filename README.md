@@ -5,7 +5,7 @@
 ## Running
 
 ```bash
-kubectl run --restart=Never --image=ongoonku/kuard-amd64:blue kuard
+kubectl run --restart=Never --image=blauwelucht/kuard-amd64:blue kuard
 kubectl port-forward kuard 8080:8080
 ```
 
@@ -97,18 +97,18 @@ Images built will automatically have the git version (based on tag) applied.  In
 Originally (and in the Kubernetes Up & Running book) we had `1`, `2`, and `3`.  This confused people so going forward we will also be using colors instead: `blue`, `green` and `purple`. This translates into the following container images:
 
 ```text
-ongoonku/kuard-amd64:v0.11.0-4-gd53d615-blue
-ongoonku/kuard-amd64:1
-ongoonku/kuard-amd64:blue
-ongoonku/kuard-amd64:v0.11.0-4-gd53d615-green
-ongoonku/kuard-amd64:2
-ongoonku/kuard-amd64:green
-ongoonku/kuard-amd64:v0.11.0-4-gd53d615-purple
-ongoonku/kuard-amd64:3
-ongoonku/kuard-amd64:purple
+blauwelucht/kuard-amd64:v0.11.0-4-gd53d615-blue
+blauwelucht/kuard-amd64:1
+blauwelucht/kuard-amd64:blue
+blauwelucht/kuard-amd64:v0.11.0-4-gd53d615-green
+blauwelucht/kuard-amd64:2
+blauwelucht/kuard-amd64:green
+blauwelucht/kuard-amd64:v0.11.0-4-gd53d615-purple
+blauwelucht/kuard-amd64:3
+blauwelucht/kuard-amd64:purple
 ```
 
-For documentation where you want to demonstrate using versions but use the latest version of this server, you can simply reference `ongoonku/kuard-amd64:blue`.  You can then demonstrate an upgrade with `ongoonku/kuard-amd64:green`.
+For documentation where you want to demonstrate using versions but use the latest version of this server, you can simply reference `blauwelucht/kuard-amd64:blue`.  You can then demonstrate an upgrade with `blauwelucht/kuard-amd64:green`.
 
 (Another way to think about it is that `:blue` is essentially `:latest-blue`)
 
