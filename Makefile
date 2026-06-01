@@ -222,6 +222,27 @@ push: $(PUSH_BUILDSTAMP)
 	cat $< > $@
 
 ##############################################################################
+# Test the container image
+
+.PHONY: test
+test: .$(BUILDSTAMP_NAME)-image
+	@echo "Testing $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER)"
+	@CID=$$(docker run -d -p 8080:8080 $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER)); \
+	PASS=0; \
+	for i in 1 2 3 4 5 6 7 8 9 10; do \
+		sleep 1; \
+		if curl -sf http://localhost:8080/ 2>/dev/null | grep -q "KUAR Demo"; then \
+			PASS=1; break; \
+		fi; \
+	done; \
+	docker stop $$CID > /dev/null; \
+	if [ $$PASS -eq 1 ]; then \
+		echo "Test passed: $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER)"; \
+	else \
+		echo "Test failed: $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER)"; exit 1; \
+	fi
+
+##############################################################################
 # Rules for dealing with fake versions
 build-fakever-%:
 	$(MAKE) --no-print-directory FAKEVER=$* build
@@ -232,6 +253,9 @@ images-fakever-%:
 push-fakever-%:
 	$(MAKE) --no-print-directory FAKEVER=$* push
 
+test-fakever-%:
+	$(MAKE) --no-print-directory FAKEVER=$* test
+
 .PHONY: all-fakever-build
 all-fakever-build: $(addprefix build-fakever-, $(ALL_FAKEVER))
 
@@ -240,6 +264,9 @@ all-fakever-images: $(addprefix images-fakever-, $(ALL_FAKEVER))
 
 .PHONY: all-fakever-push
 all-fakever-push: $(addprefix push-fakever-, $(ALL_FAKEVER))
+
+.PHONY: all-fakever-test
+all-fakever-test: $(addprefix test-fakever-, $(ALL_FAKEVER))
 
 ##############################################################################
 # Rules for dealing with multiple/all architectures at once
@@ -316,15 +343,16 @@ help:
 	@echo "  all, build    build all binaries"
 	@echo "  images        build the container image"
 	@echo "  push          push images to the registry"
+	@echo "  test          build image and run smoke test"
 	@echo "  clean         clean up all files and docker volumes/images"
 	@echo "  help          this help message"
 	@echo "  version       show package version"
 	@echo
-	@echo "  {build,images,push}-arch-ARCH    do action for specific ARCH"
-	@echo "  all-arch-{build,images,push}     do action for all arches"
+	@echo "  {build,images,push,test}-arch-ARCH    do action for specific ARCH"
+	@echo "  all-arch-{build,images,push}          do action for all arches"
 	@echo
-	@echo "  {build,images,push}-fakever-FAKEVER  do action for specific FAKEVER"
-	@echo "  all-fakever-{build,images,push}      do action for all fakevers"
+	@echo "  {build,images,push,test}-fakever-FAKEVER  do action for specific FAKEVER"
+	@echo "  all-fakever-{build,images,push,test}      do action for all fakevers"
 	@echo
 	@echo "  all-{build,images,push}    do action fo all arches and all fakevers"
 	@echo
