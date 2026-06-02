@@ -143,11 +143,11 @@ This should support live reload of any changes to the client.  The Go server wil
 
 This is a fork of the [original kuard repository](https://github.com/kubernetes-up-and-running/kuard). The following improvements have been made:
 
-- **Docker repository**: images are published to `blauwelucht/kuard-amd64` instead of the upstream registry
-- **Version colors**: the three fake versions (`blue`, `green`, `purple`) now actually render in different colors in the UI, making it easier to distinguish them visually
-- **GitHub Actions**: automated CI pipeline that builds and pushes all versions on every push to `master` or a version tag
-- **Go e2e test suite**: replaced the shell-based smoke test with a proper Go test suite using [Ginkgo](https://onsi.github.io/ginkgo/) and [Gomega](https://onsi.github.io/gomega/), compiled inside the same build container as the kuard binary
-- **Modernised toolchain**: upgraded to Go 1.26, webpack 5, and babel-loader 9 — the build is compatible with Node.js 24
+* **Docker repository**: images are published to `blauwelucht/kuard-amd64` instead of the upstream registry
+* **Version colors**: the three fake versions (`blue`, `green`, `purple`) now actually render in different colors in the UI, making it easier to distinguish them visually
+* **GitHub Actions**: automated CI pipeline that builds and pushes all versions on every push to `master` or a version tag
+* **Go e2e test suite**: replaced the shell-based smoke test with a proper Go test suite using [Ginkgo](https://onsi.github.io/ginkgo/) and [Gomega](https://onsi.github.io/gomega/), compiled inside the same build container as the kuard binary
+* **Modernised toolchain**: upgraded to Go 1.26, webpack 5, and babel-loader 9 — the build is compatible with Node.js 24
 
 ## TODO
 
