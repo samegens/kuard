@@ -1,5 +1,7 @@
 # Demo application for "Kubernetes Up and Running"
 
+[![CI](https://github.com/samegens/kuard/actions/workflows/build.yml/badge.svg)](https://github.com/samegens/kuard/actions/workflows/build.yml)
+
 ![screenshot](docs/images/screenshot.png)
 
 ## Running
