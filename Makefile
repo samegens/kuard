@@ -222,25 +222,38 @@ push: $(PUSH_BUILDSTAMP)
 	cat $< > $@
 
 ##############################################################################
+# Build the test binary
+
+TESTBINARYPATH := bin/test/e2e.test
+
+TEST_DOCKER_MOUNTS := \
+	-v $(BUILD_IMAGE)-data:/data:delegated \
+	-v $$(pwd):/data/go/src/$(PKG):delegated \
+	-v $$(pwd)/bin/test:/out:delegated
+
+.PHONY: test-binary
+test-binary: $(TESTBINARYPATH)
+
+$(TESTBINARYPATH): build/build-test.sh $(BUILD_IMAGE_BUILDSTAMP)
+	@echo "building test binary: $@"
+	@mkdir -p $(shell pwd)/bin/test
+	docker run                                                               \
+			$(DOCKER_RUN_FLAGS)                                                  \
+			$(TEST_DOCKER_MOUNTS)                                                \
+			--sig-proxy=true                                                     \
+			-e PKG=$(PKG)                                                        \
+			-e VERBOSE=$(VERBOSE)                                                \
+			-u $$(id -u):$$(id -g)                                               \
+			-w /data/go/src/$(PKG)                                               \
+			$(BUILD_IMAGE)                                                       \
+			./build/build-test.sh $(VERBOSE_OUTPUT)
+
+##############################################################################
 # Test the container image
 
-.PHONY: test
-test: .$(BUILDSTAMP_NAME)-image
-	@echo "Testing $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER)"
-	@CID=$$(docker run -d -p 8080:8080 $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER)); \
-	PASS=0; \
-	for i in 1 2 3 4 5 6 7 8 9 10; do \
-		sleep 1; \
-		if curl -sf http://localhost:8080/ 2>/dev/null | grep -q "KUAR Demo"; then \
-			PASS=1; break; \
-		fi; \
-	done; \
-	docker stop $$CID > /dev/null; \
-	if [ $$PASS -eq 1 ]; then \
-		echo "Test passed: $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER)"; \
-	else \
-		echo "Test failed: $(IMAGE_NAME):$(VERSION_BASE)-$(FAKEVER)"; exit 1; \
-	fi
+.PHONY: e2e-test
+e2e-test: all-fakever-images $(TESTBINARYPATH)
+	$(TESTBINARYPATH)
 
 ##############################################################################
 # Rules for dealing with fake versions

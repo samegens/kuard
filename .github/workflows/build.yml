@@ -14,7 +14,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build images and test all versions
-        run: make all-fakever-test
+        run: make e2e-test
 
       # DOCKER_PASSWORD must be a Docker Hub Personal Access Token (PAT), not your account password.
       # Create one at https://hub.docker.com/settings/security

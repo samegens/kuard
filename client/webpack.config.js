@@ -1,4 +1,3 @@
-var webpack = require('webpack');
 var path = require('path');
 
 var BUILD_DIR = path.resolve(__dirname, '../sitedata/built');
@@ -23,17 +22,14 @@ module.exports = {
     publicPath: '/built/',
     filename: 'bundle.js'
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ],
+  plugins: [],
   performance: { hints: false },
   devServer: {
-    inline: true,
     hot: true,
     port: 8081,
-    proxy: {
-      "**": "http://localhost:8080"
-    }
+    proxy: [
+      { context: () => true, target: 'http://localhost:8080' }
+    ]
   }
 };
 
